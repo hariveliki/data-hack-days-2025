@@ -2,17 +2,9 @@ from collection_manager import CollectionManager
 
 
 def main():
-    # Initialize the collection manager
     manager = CollectionManager()
 
     try:
-        # Create a new collection named 'motionen'
-        collection_name = "motionen"
-
-        # Create the collection
-        manager.create_collection(collection_name)
-
-        # List all collections
         collections = manager.list_collections()
         print("\nExisting collections:")
         if collections:
