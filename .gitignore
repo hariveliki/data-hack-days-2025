@@ -58,3 +58,6 @@ htmlcov/
 .nox/
 coverage.xml
 *.cover 
+
+extracted_texts
+data/
