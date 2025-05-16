@@ -1,0 +1,4 @@
+spacy>=3.7.2
+PyPDF2>=3.0.0
+pandas>=2.0.0
+requests>=2.31.0 

@@ -8,13 +8,13 @@ class CollectionManager:
         """Initialize the collection manager with Qdrant client."""
         self.client = QdrantClient(host=host, port=port)
 
-    def create_collection(self, collection_name: str, vector_size: int = 1536) -> bool:
+    def create_collection(self, collection_name: str, vector_size: int = 384) -> bool:
         """
         Create a new collection with specified parameters.
 
         Args:
             collection_name: Name of the collection to create
-            vector_size: Size of the vectors to be stored
+            vector_size: Size of the vectors to be stored (default: 384 for all-MiniLM-L6-v2)
 
         Returns:
             bool: True if collection was created successfully, False otherwise

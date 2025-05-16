@@ -5,8 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "layoutparser>=0.3.4",
     "pandas>=2.2.3",
+    "pdfplumber>=0.11.6",
+    "pip>=25.1.1",
     "pypdf2>=3.0.1",
     "qdrant-client>=1.14.2",
     "requests>=2.32.3",
+    "spacy>=3.8.4",
+    "torch>=2.7.0",
+    "torchvision>=0.22.0",
+    "sentence-transformers>=2.5.1",
 ]

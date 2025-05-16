@@ -25,6 +25,15 @@ def filter_data(df):
         & (df["dokument_typ_deutsch"].isin(["Vorstosstext", "Vorstoss"]))
     ]
 
+    # Check for duplicates
+    duplicates = filtered_df.duplicated()
+    if duplicates.any():
+        print(f"\nFound {duplicates.sum()} duplicate rows")
+        filtered_df = filtered_df.drop_duplicates()
+        print(f"Removed duplicates. New row count: {len(filtered_df)}")
+    else:
+        print("\nNo duplicate rows found")
+
     return filtered_df
 
 
