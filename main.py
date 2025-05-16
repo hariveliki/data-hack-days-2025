@@ -1,22 +1,26 @@
-from qdrant_client import QdrantClient
+from collection_manager import CollectionManager
 
 
 def main():
-    # Initialize the client
-    client = QdrantClient(host="localhost", port=6333)
-
-    print("Attempting to connect to Qdrant and list collections...")
+    # Initialize the collection manager
+    manager = CollectionManager()
 
     try:
-        # Get a list of all collections
-        collections = client.get_collections()
-        print("Successfully connected to Qdrant.")
-        if collections.collections:
-            print("Existing collections:")
-            for collection in collections.collections:
-                print(f"- {collection.name}")
+        # Create a new collection named 'motionen'
+        collection_name = "motionen"
+
+        # Create the collection
+        manager.create_collection(collection_name)
+
+        # List all collections
+        collections = manager.list_collections()
+        print("\nExisting collections:")
+        if collections:
+            for collection in collections:
+                print(f"- {collection}")
         else:
             print("No collections found.")
+
     except Exception as e:
         print(f"Could not connect to Qdrant or an error occurred: {e}")
         print(
