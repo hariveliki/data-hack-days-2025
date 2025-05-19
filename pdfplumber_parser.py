@@ -50,12 +50,15 @@ class PDFPlumberParser:
     """Class to handle PDF extraction operations using PDFPlumber."""
 
     output_dir: Path = "data"
+    text_cleaner: TextCleaner = TextCleaner()
 
     def __post_init__(self):
-        """Create output directory if it doesn't exist."""
+        """Create output directory if it doesn't exist and initialize text cleaner."""
         if isinstance(self.output_dir, str):
             self.output_dir = Path(self.output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        if self.text_cleaner is None:
+            self.text_cleaner = TextCleaner()
 
     def download_pdf(self, url: str) -> Optional[BytesIO]:
         """Download PDF from URL.
