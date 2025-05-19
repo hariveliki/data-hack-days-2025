@@ -2,8 +2,8 @@ from typing import List, Dict, Any, Optional, Protocol
 import pandas as pd
 from pathlib import Path
 import logging
-from pdfminer_parser import PDFMinerParser
-from qdrant_client_manager import QdrantClientManager
+from src.parsers.pdfminer_parser import PDFMinerParser
+from src.db.qdrant_client_manager import QdrantClientManager
 from qdrant_client.http import models
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -12,7 +12,6 @@ from rank_bm25 import BM25Okapi
 from collections import Counter
 from FlagEmbedding import BGEM3FlagModel
 
-# Set up logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )

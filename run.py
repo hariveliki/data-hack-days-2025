@@ -1,11 +1,13 @@
-from qdrant_client_manager import QdrantClientManager
-from data_pipeline import DataPipeline
-from pdfplumber_parser import PDFPlumberParser
-from pypdf2_parser import PyPDF2Parser
-from pdfminer_parser import PDFMinerParser
+import argparse
 import logging
 import traceback
 from typing import Union
+
+from src.db.qdrant_client_manager import QdrantClientManager
+from src.pipeline.data_pipeline import DataPipeline
+from src.parsers.pdfplumber_parser import PDFPlumberParser
+from src.parsers.pypdf2_parser import PyPDF2Parser
+from src.parsers.pdfminer_parser import PDFMinerParser
 
 
 def get_parser(parser_type: str):
@@ -17,7 +19,6 @@ def get_parser(parser_type: str):
     return parser_map.get(parser_type.lower())
 
 
-# Set up logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -25,19 +26,18 @@ logger = logging.getLogger(__name__)
 
 
 def main(
-    collection_name: str,
-    delete_collection: bool,
-    process: bool,
-    search: bool,
-    search_limit: int,
-    process_samples: Union[int, str],
-    query: str,
-    parser_type: str,
+    query: str = None,
+    search_limit: int = 10,
+    process: bool = False,
+    process_samples: Union[int, str] = "all",
+    parser_type: str = "pdfminer",
+    collection_name: str = "test",
+    delete_collection: bool = False,
 ):
     manager = QdrantClientManager()
-    # if delete_collection and manager.collection_exists(collection_name):
-    #     logger.info(f"Deleting existing collection: {collection_name}")
-    #     manager.delete_collection(collection_name)
+    if delete_collection and manager.collection_exists(collection_name):
+        logger.info(f"Deleting existing collection: {collection_name}")
+        manager.delete_collection(collection_name)
 
     parser = get_parser(parser_type)
     if parser is None:
@@ -57,8 +57,7 @@ def main(
                 pipeline.process_and_store(process_samples)
             logger.info("Document processing and storage completed.")
 
-        if search:
-            query = query
+        if query:
             logger.info(f"Performing hybrid search for: {query}")
             results = pipeline.search_similar(query, limit=search_limit)
 
@@ -82,18 +81,56 @@ def main(
 
 
 if __name__ == "__main__":
-    query1 = "Erhalt und Förderung einer vielfältigen Tier- und Pflanzenwelt?"
-    query2 = "Zugang zu Erwerbstätigkeit für Personen im Asylverfahren?"
-    query3 = "Vorkehrungen zur barrierefreien Gestaltung von Einrichtungen?"
-    for query in [query1, query2, query3]:
-        print("\n")
-        main(
-            collection_name="motions2",
-            delete_collection=False,
-            process=False,
-            process_samples="all",
-            search=True,
-            search_limit=6,
-            query=query,
-            parser_type="pdfminer",
-        )
+    parser = argparse.ArgumentParser(description="Run the main script.")
+    parser.add_argument(
+        "--query",
+        type=str,
+        default=None,
+        help="Query to perform hybrid search on",
+    )
+    parser.add_argument(
+        "--parser_type",
+        type=str,
+        default="pdfminer",
+        help="Parser type to use",
+    )
+    parser.add_argument(
+        "--collection_name",
+        type=str,
+        default="test",
+        help="Collection name to use",
+    )
+    parser.add_argument(
+        "--delete_collection",
+        type=bool,
+        default=False,
+        help="Delete collection if it exists",
+    )
+    parser.add_argument(
+        "--process",
+        type=bool,
+        default=False,
+        help="Process and store documents",
+    )
+    parser.add_argument(
+        "--process_samples",
+        type=str,
+        default="all",
+        help="Process samples to use",
+    )
+    parser.add_argument(
+        "--search_limit",
+        type=int,
+        default=10,
+        help="Search limit",
+    )
+    args = parser.parse_args()
+    main(
+        collection_name=args.collection_name,
+        delete_collection=args.delete_collection,
+        process=args.process,
+        process_samples=args.process_samples,
+        search_limit=args.search_limit,
+        query=args.query,
+        parser_type=args.parser_type,
+    )

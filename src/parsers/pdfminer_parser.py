@@ -12,7 +12,7 @@ import re
 from typing import Set
 from pdfminer.high_level import extract_text as pdfminer_extract_text
 from pdfminer.pdfparser import PDFSyntaxError
-from text_cleaner import AdvancedTextCleaner
+from src.pipeline.text_cleaner import AdvancedTextCleaner
 
 # Set up logging
 logging.basicConfig(

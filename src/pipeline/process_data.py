@@ -2,11 +2,9 @@ import pandas as pd
 
 
 def load_and_merge_data():
-    # Read the CSV files
     geschaeft_df = pd.read_csv("data/geschaeft.csv")
     dokument_df = pd.read_csv("data/dokument.csv")
 
-    # Merge the dataframes using the correct column names
     merged_df = pd.merge(
         dokument_df,
         geschaeft_df,
@@ -19,13 +17,11 @@ def load_and_merge_data():
 
 
 def filter_data(df):
-    # Apply the required filters
     filtered_df = df[
         (df["geschaeft_typ_deutsch"] == "Motion")
         & (df["dokument_typ_deutsch"].isin(["Vorstosstext", "Vorstoss"]))
     ]
 
-    # Check for duplicates
     duplicates = filtered_df.duplicated()
     if duplicates.any():
         print(f"\nFound {duplicates.sum()} duplicate rows")
@@ -38,13 +34,9 @@ def filter_data(df):
 
 
 def main():
-    # Load and merge the data
     merged_df = load_and_merge_data()
-
-    # Apply filters
     filtered_df = filter_data(merged_df)
 
-    # Display basic information about the filtered dataframe
     print("\nFiltered DataFrame Info:")
     print(f"Number of rows: {len(filtered_df)}")
     print("\nColumns in the filtered dataframe:")
