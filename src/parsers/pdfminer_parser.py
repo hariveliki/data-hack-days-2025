@@ -13,7 +13,7 @@ import requests
 from pdfminer.high_level import extract_text as pdfminer_extract_text
 from pdfminer.pdfparser import PDFSyntaxError
 
-from src.pipeline.text_cleaner import AdvancedTextCleaner
+from src.pipeline.text_cleaner import SimpleTextCleaner
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -29,7 +29,7 @@ class PDFMinerParser:
     extracted_dir: Path = Path("data/parsers/pdfminer/extracted")
     cleaned_dir: Path = Path("data/parsers/pdfminer/cleaned")
     duplicates_dir: Path = Path("data/parsers/pdfminer/duplicates")
-    text_cleaner: AdvancedTextCleaner = AdvancedTextCleaner()
+    text_cleaner: SimpleTextCleaner = SimpleTextCleaner()
 
     def __post_init__(self):
         """Create output directories if they don't exist."""

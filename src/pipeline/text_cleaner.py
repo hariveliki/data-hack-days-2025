@@ -27,6 +27,31 @@ class TextCleaner(Protocol):
         ...
 
 
+class SimpleTextCleaner:
+    """Minimal text cleaner that only removes line breaks and extra spaces, placing all text on one line."""
+
+    def clean_text(self, text: str) -> str:
+        """Clean text by removing line breaks and extra spaces only.
+
+        Args:
+            text (str): Input text to clean
+
+        Returns:
+            str: Cleaned text on a single line
+        """
+        if not text:
+            return ""
+
+        # Replace all line breaks with a single space
+        text = re.sub(r"\n+", " ", text)
+
+        # Replace multiple spaces with a single space
+        text = re.sub(r"\s+", " ", text)
+
+        # Remove leading/trailing whitespace
+        return text.strip()
+
+
 class BasicTextCleaner:
     """Basic text cleaner implementation."""
 
@@ -143,7 +168,9 @@ class TextCleanerFactory:
         self.cleaner_type = cleaner_type
 
     def get_cleaner(self) -> TextCleaner:
-        if self.cleaner_type == "basic":
+        if self.cleaner_type == "simple":
+            return SimpleTextCleaner()
+        elif self.cleaner_type == "basic":
             return BasicTextCleaner()
         elif self.cleaner_type == "advanced":
             return AdvancedTextCleaner()
