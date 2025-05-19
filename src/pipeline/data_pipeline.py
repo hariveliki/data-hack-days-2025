@@ -1,16 +1,18 @@
-from typing import List, Dict, Any, Optional, Protocol
-import pandas as pd
-from pathlib import Path
-import logging
-from src.parsers.pdfminer_parser import PDFMinerParser
-from src.db.qdrant_client_manager import QdrantClientManager
-from qdrant_client.http import models
-import numpy as np
-from sentence_transformers import SentenceTransformer
-import uuid
-from rank_bm25 import BM25Okapi
 from collections import Counter
+import logging
+from typing import Any, Dict, List, Optional, Protocol
+import uuid
+
 from FlagEmbedding import BGEM3FlagModel
+import numpy as np
+import pandas as pd
+from qdrant_client.http import models
+from rank_bm25 import BM25Okapi
+from sentence_transformers import SentenceTransformer
+
+from src.db.qdrant_client_manager import QdrantClientManager
+from src.parsers.pdfminer_parser import PDFMinerParser
+from src.pipeline.process_data import filter_and_save_data
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -104,6 +106,7 @@ class DataPipeline:
 
     def process_and_store(self, samples: int = 0) -> None:
         """Process PDFs and store the extracted text in Qdrant with hybrid vectors."""
+        filter_and_save_data()
         if samples > 0:
             df = pd.read_csv("data/filtered_motions.csv").head(samples)
         else:

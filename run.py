@@ -29,13 +29,13 @@ def main(
     query: str = None,
     search_limit: int = 10,
     process: bool = False,
-    process_samples: Union[int, str] = "all",
+    samples: Union[int, str] = "all",
     parser_type: str = "pdfminer",
     collection_name: str = "test",
-    delete_collection: bool = False,
+    del_col: bool = False,
 ):
     manager = QdrantClientManager()
-    if delete_collection and manager.collection_exists(collection_name):
+    if del_col and manager.collection_exists(collection_name):
         logger.info(f"Deleting existing collection: {collection_name}")
         manager.delete_collection(collection_name)
 
@@ -51,10 +51,12 @@ def main(
     try:
         if process:
             logger.info("Starting document processing and storage...")
-            if process_samples == "all":
+            if isinstance(samples, str) and samples == "all":
                 pipeline.process_and_store()
+            elif isinstance(samples, str) and samples.isdigit():
+                pipeline.process_and_store(int(samples))
             else:
-                pipeline.process_and_store(process_samples)
+                raise ValueError(f"Invalid samples value: {samples}")
             logger.info("Document processing and storage completed.")
 
         if query:
@@ -101,7 +103,7 @@ if __name__ == "__main__":
         help="Collection name to use",
     )
     parser.add_argument(
-        "--delete_collection",
+        "--del_col",
         type=bool,
         default=False,
         help="Delete collection if it exists",
@@ -113,7 +115,7 @@ if __name__ == "__main__":
         help="Process and store documents",
     )
     parser.add_argument(
-        "--process_samples",
+        "--samples",
         type=str,
         default="all",
         help="Process samples to use",
@@ -127,9 +129,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(
         collection_name=args.collection_name,
-        delete_collection=args.delete_collection,
+        del_col=args.del_col,
         process=args.process,
-        process_samples=args.process_samples,
+        samples=args.samples,
         search_limit=args.search_limit,
         query=args.query,
         parser_type=args.parser_type,
